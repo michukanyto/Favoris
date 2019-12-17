@@ -1,19 +1,122 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
     <TextView
+        android:id="@+id/folderTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="Folder"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/createFolderEditText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
+        android:ems="10"
+        android:hint="Folder Name..."
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toStartOf="@+id/createFolderButton"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/folderTitle"
+        app:layout_constraintTop_toBottomOf="@+id/folderTitle" />
+
+    <Button
+        android:id="@+id/createFolderButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:text="Create Folder"
+        app:layout_constraintBottom_toBottomOf="@+id/createFolderEditText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/createFolderEditText" />
+
+    <TextView
+        android:id="@+id/bookmarkTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="Bookmark"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        app:layout_constraintStart_toStartOf="@+id/folderTitle"
+        app:layout_constraintTop_toBottomOf="@+id/createFolderEditText" />
+
+    <EditText
+        android:id="@+id/bookmarkFolderNameEditText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
+        android:ems="10"
+        android:hint="Folder Name..."
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/bookmarkTitle"
+        app:layout_constraintTop_toBottomOf="@+id/bookmarkTitle" />
+
+    <EditText
+        android:id="@+id/bookmarkNameEditText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="My Website"
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toEndOf="@+id/bookmarkFolderNameEditText"
+        app:layout_constraintStart_toStartOf="@+id/bookmarkTitle"
+        app:layout_constraintTop_toBottomOf="@+id/bookmarkFolderNameEditText" />
+
+    <EditText
+        android:id="@+id/bookmarkUrlEditText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:ems="10"
+        android:hint="http://web.site"
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toEndOf="@+id/bookmarkNameEditText"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/bookmarkTitle"
+        app:layout_constraintTop_toBottomOf="@+id/bookmarkNameEditText" />
+
+    <Button
+        android:id="@+id/createBookmarkButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Create Bookmark"
+        app:layout_constraintEnd_toEndOf="@+id/createFolderButton"
+        app:layout_constraintTop_toBottomOf="@+id/bookmarkUrlEditText" />
+
+    <TextView
+        android:id="@+id/bookmarksTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="TextView"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/createBookmarkButton" />
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
