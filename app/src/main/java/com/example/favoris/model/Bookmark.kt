@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "bookmarks",foreignKeys = [
 ForeignKey(entity = Folder::class,
     parentColumns = ["id"],
-    childColumns = ["id"],
+    childColumns = ["folderId"],
     onDelete = ForeignKey.NO_ACTION,
     onUpdate = ForeignKey.NO_ACTION)])
 data class Bookmark (
