@@ -30,12 +30,12 @@ class MainActivity : AppCompatActivity() {
             bookmarkFolderNameEditText.setText(folderName)
             folderDAO.getFolder(folderName!!).observe(this, Observer { folder ->
                 Log.i("Main1","folders = $folder")
-                if (folder != null) {
+                if (folder.name == folderName) {
                     displayToast("Folder created successfully")
                 } else {
                     displayToast(" WARNING!!! Folder wasn't created ")
                 }
-                
+
             })
 
         }
