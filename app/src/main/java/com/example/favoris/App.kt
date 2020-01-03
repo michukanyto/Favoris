@@ -6,12 +6,12 @@ import androidx.room.RoomDatabase
 
 class App : Application() {
     companion object{
-        lateinit var database: AppDatabase
+        lateinit var dataBase: AppDatabase
     }
 
     override fun onCreate() {
         super.onCreate()
-        database = Room.databaseBuilder(this,AppDatabase::class.java,"Favoris").build()
+        dataBase = Room.databaseBuilder(this,AppDatabase::class.java,"Favoris").build()
     }
 
 }

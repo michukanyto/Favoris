@@ -17,5 +17,5 @@ interface IBookmarkDao {
     fun getAllBookmarks() : LiveData<List<Bookmark>>
 
     @Query("SELECT * FROM bookmarks WHERE id = :idBookmark")
-    fun getBookmark(idBookmark: Int) : LiveData<Bookmark>
+    fun getBookmark(idBookmark: Long) : LiveData<Bookmark>
 }
