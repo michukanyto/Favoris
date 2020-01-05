@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.Observer
+import com.example.favoris.model.Bookmark
 import com.example.favoris.model.Folder
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.concurrent.Executors
@@ -15,6 +16,7 @@ class MainActivity : AppCompatActivity() {
     private var bookmark:String? = null
     private var name:String? = null
     private var url:String? = null
+    private var folderID:Long? = 0
 
     val folderDAO = App.dataBase.folderDAO()
     val bookmarkDAO = App.dataBase.bookmarkDAO()
@@ -30,6 +32,7 @@ class MainActivity : AppCompatActivity() {
             bookmarkFolderNameEditText.setText(folderName)
             folderDAO.getFolder(folderName!!).observe(this, Observer { folder ->
                 Log.i("Main1","folders = $folder")
+                folderID = folder.id
                 if (folder.name == folderName) {
                     displayToast("Folder created successfully")
                 } else {
@@ -44,6 +47,10 @@ class MainActivity : AppCompatActivity() {
             bookmark = bookmarkFolderNameEditText.text.toString()
             name = bookmarkNameEditText.text.toString()
             url = bookmarkUrlEditText.text.toString()
+            createBookmark()
+            bookmarkDAO.getAllBookmarks().observe(this, Observer { bookmarks ->
+                bookmarksTextView.text = bookmarks.toString()
+            })
         }
 
     }
@@ -53,6 +60,12 @@ class MainActivity : AppCompatActivity() {
             folderDAO.insertFolder(Folder(0, folderName!!))
         }
 
+    }
+
+    fun createBookmark(){
+        Executors.newSingleThreadExecutor().execute {
+            bookmarkDAO.insertBookmark(Bookmark(0,folderID!!,name!!,url!!))
+        }
     }
 
     fun displayToast(message: String) {
