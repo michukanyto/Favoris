@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.Observer
+import com.example.favoris.dao.IBookmarkDao
+import com.example.favoris.dao.IFolderDao
 import com.example.favoris.model.Bookmark
 import com.example.favoris.model.Folder
 import kotlinx.android.synthetic.main.activity_main.*
@@ -18,14 +20,17 @@ class MainActivity : AppCompatActivity() {
     private var url:String? = null
     private var folderID:Long? = 0
 
-    val folderDAO = App.dataBase.folderDAO()
-    val bookmarkDAO = App.dataBase.bookmarkDAO()
+//    private val folderDAO = App.dataBase.folderDAO()
+//    private val bookmarkDAO = App.dataBase.bookmarkDAO()
+    private lateinit var folderDAO: IFolderDao
+    private lateinit var bookmarkDAO: IBookmarkDao
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
 
+        folderDAO = App.dataBase.folderDAO()
         createFolderButton.setOnClickListener {
             folderName = createFolderEditText.text.toString()
             saveFolder()
@@ -38,11 +43,11 @@ class MainActivity : AppCompatActivity() {
                 } else {
                     displayToast(" WARNING!!! Folder wasn't created ")
                 }
-
             })
-
         }
 
+
+        bookmarkDAO = App.dataBase.bookmarkDAO()
         createBookmarkButton.setOnClickListener {
             bookmark = bookmarkFolderNameEditText.text.toString()
             name = bookmarkNameEditText.text.toString()
@@ -57,7 +62,7 @@ class MainActivity : AppCompatActivity() {
 
     fun saveFolder() {
         Executors.newSingleThreadExecutor().execute {
-            folderDAO.insertFolder(Folder(0, folderName!!))
+            folderDAO.insertFolder(Folder(name = folderName!!))
         }
 
     }

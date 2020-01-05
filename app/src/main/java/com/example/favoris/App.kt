@@ -11,6 +11,7 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        //Create DB
         dataBase = Room.databaseBuilder(this,AppDatabase::class.java,"Favoris").build()
     }
 
