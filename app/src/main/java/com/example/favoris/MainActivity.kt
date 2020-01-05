@@ -3,8 +3,12 @@ package com.example.favoris
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.EditText
 import android.widget.Toast
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import androidx.lifecycle.Transformations
 import com.example.favoris.dao.IBookmarkDao
 import com.example.favoris.dao.IFolderDao
 import com.example.favoris.model.Bookmark
@@ -14,14 +18,14 @@ import java.util.concurrent.Executors
 
 class MainActivity : AppCompatActivity() {
 
-    private var folderName:String? = null
-    private var bookmark:String? = null
+    private var folderName = MutableLiveData<String>()
+    lateinit var getFolderLiveData: LiveData<Folder>
     private var name:String? = null
     private var url:String? = null
-    private var folderID:Long? = 0
 
-//    private val folderDAO = App.dataBase.folderDAO()
-//    private val bookmarkDAO = App.dataBase.bookmarkDAO()
+
+
+
     private lateinit var folderDAO: IFolderDao
     private lateinit var bookmarkDAO: IBookmarkDao
 
@@ -29,52 +33,69 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        getFolderLiveData = Transformations.switchMap(folderName){name ->
+            folderDAO.getFolder(name)
+        }
 
+        getFolderLiveData.observe(this, Observer { folder ->
+            createBookmark(folder!!.id,bookmarkFolderNameEditText.textString(),bookmarkUrlEditText.textString())
+        })
+
+
+        //CREATE FOLDER
         folderDAO = App.dataBase.folderDAO()
         createFolderButton.setOnClickListener {
-            folderName = createFolderEditText.text.toString()
             saveFolder()
-            bookmarkFolderNameEditText.setText(folderName)
-            folderDAO.getFolder(folderName!!).observe(this, Observer { folder ->
+            bookmarkFolderNameEditText.setText(createFolderEditText.textString())
+            folderDAO.getFolder(createFolderEditText.text.toString()!!).observe(this, Observer { folder ->
                 Log.i("Main1","folders = $folder")
-                folderID = folder.id
-                if (folder.name == folderName) {
+
+                if (folder.name == createFolderEditText.textString()) {
                     displayToast("Folder created successfully")
                 } else {
                     displayToast(" WARNING!!! Folder wasn't created ")
                 }
+
             })
         }
 
-
+        //CREATE BOOKMARK
         bookmarkDAO = App.dataBase.bookmarkDAO()
         createBookmarkButton.setOnClickListener {
-            bookmark = bookmarkFolderNameEditText.text.toString()
-            name = bookmarkNameEditText.text.toString()
-            url = bookmarkUrlEditText.text.toString()
-            createBookmark()
-            bookmarkDAO.getAllBookmarks().observe(this, Observer { bookmarks ->
-                bookmarksTextView.text = bookmarks.toString()
-            })
+            folderName.value = bookmarkFolderNameEditText.textString()
         }
 
+    }
+
+    private fun createBookmark(id: Long, name: String, url: String) {
+        Executors.newSingleThreadExecutor().execute {
+            bookmarkDAO.insertBookmark(Bookmark(0,id!!,name!!,url!!))
+        }
+
+        bookmarkDAO.getAllBookmarks().observe(this, Observer { bookmarks ->
+            bookmarksTextView.text = bookmarks.toString()
+        })
     }
 
     fun saveFolder() {
         Executors.newSingleThreadExecutor().execute {
-            folderDAO.insertFolder(Folder(name = folderName!!))
+            folderDAO.insertFolder(Folder(name = createFolderEditText.textString()!!))
         }
 
     }
 
-    fun createBookmark(){
-        Executors.newSingleThreadExecutor().execute {
-            bookmarkDAO.insertBookmark(Bookmark(0,folderID!!,name!!,url!!))
-        }
-    }
+//    fun createBookmark(){
+//        Executors.newSingleThreadExecutor().execute {
+//            bookmarkDAO.insertBookmark(Bookmark(0,folderID!!,name!!,url!!))
+//        }
+//    }
 
     fun displayToast(message: String) {
         Toast.makeText(this,message,Toast.LENGTH_LONG).show()
+    }
+
+    fun EditText.textString(): String {
+        return this.text.toString()
     }
 
 
