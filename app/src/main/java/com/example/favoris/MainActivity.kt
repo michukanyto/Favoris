@@ -18,12 +18,8 @@ import java.util.concurrent.Executors
 
 class MainActivity : AppCompatActivity() {
 
-    private var folderName = MutableLiveData<String>()
+    private var folderNameLiveData = MutableLiveData<String>()
     lateinit var getFolderLiveData: LiveData<Folder>
-    private var name:String? = null
-    private var url:String? = null
-
-
 
 
     private lateinit var folderDAO: IFolderDao
@@ -33,7 +29,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        getFolderLiveData = Transformations.switchMap(folderName){name ->
+        getFolderLiveData = Transformations.switchMap(folderNameLiveData){ name ->
             folderDAO.getFolder(name)
         }
 
@@ -47,22 +43,13 @@ class MainActivity : AppCompatActivity() {
         createFolderButton.setOnClickListener {
             saveFolder()
             bookmarkFolderNameEditText.setText(createFolderEditText.textString())
-            folderDAO.getFolder(createFolderEditText.text.toString()!!).observe(this, Observer { folder ->
-                Log.i("Main1","folders = $folder")
 
-                if (folder.name == createFolderEditText.textString()) {
-                    displayToast("Folder created successfully")
-                } else {
-                    displayToast(" WARNING!!! Folder wasn't created ")
-                }
-
-            })
         }
 
         //CREATE BOOKMARK
         bookmarkDAO = App.dataBase.bookmarkDAO()
         createBookmarkButton.setOnClickListener {
-            folderName.value = bookmarkFolderNameEditText.textString()
+            folderNameLiveData.value = bookmarkFolderNameEditText.textString()
         }
 
     }
@@ -73,14 +60,26 @@ class MainActivity : AppCompatActivity() {
         }
 
         bookmarkDAO.getAllBookmarks().observe(this, Observer { bookmarks ->
-            bookmarksTextView.text = bookmarks.toString()
+            bookmarksTextView.text = bookmarks.joinToString ("\n")
         })
+
+        displayToast("Bookmark created successfully")
     }
 
     fun saveFolder() {
         Executors.newSingleThreadExecutor().execute {
             folderDAO.insertFolder(Folder(name = createFolderEditText.textString()!!))
         }
+        folderDAO.getFolder(createFolderEditText.text.toString()).observe(this, Observer { folder ->
+            Log.i("Main1","folders = $folder")
+
+            if (folder.name == createFolderEditText.textString()) {
+                displayToast("Folder created successfully")
+            } else {
+                displayToast(" WARNING!!! Folder wasn't created ")
+            }
+
+        })
 
     }
 
