@@ -14,7 +14,12 @@ import com.example.favoris.dao.IFolderDao
 import com.example.favoris.model.Bookmark
 import com.example.favoris.model.Folder
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.Default
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.concurrent.Executors
+import kotlin.random.Random
 
 class MainActivity : AppCompatActivity() {
 
@@ -55,7 +60,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun createBookmark(id: Long, name: String, url: String) {
-        Executors.newSingleThreadExecutor().execute {
+//        Executors.newSingleThreadExecutor().execute {//USED A DIFFERENT THREAD
+//            bookmarkDAO.insertBookmark(Bookmark(0,id!!,name!!,url!!))
+//        }
+        CoroutineScope(Default).launch {
             bookmarkDAO.insertBookmark(Bookmark(0,id!!,name!!,url!!))
         }
 
@@ -67,9 +75,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun saveFolder() {
-        Executors.newSingleThreadExecutor().execute {
+        CoroutineScope(Default).launch {
             folderDAO.insertFolder(Folder(name = createFolderEditText.textString()!!))
         }
+
+//        Executors.newSingleThreadExecutor().execute {//USED A DIFFERENT THREAD
+//            folderDAO.insertFolder(Folder(name = createFolderEditText.textString()!!))
+//        }
         folderDAO.getFolder(createFolderEditText.text.toString()).observe(this, Observer { folder ->
             Log.i("Main1","folders = $folder")
 
@@ -82,12 +94,6 @@ class MainActivity : AppCompatActivity() {
         })
 
     }
-
-//    fun createBookmark(){
-//        Executors.newSingleThreadExecutor().execute {
-//            bookmarkDAO.insertBookmark(Bookmark(0,folderID!!,name!!,url!!))
-//        }
-//    }
 
     fun displayToast(message: String) {
         Toast.makeText(this,message,Toast.LENGTH_LONG).show()
