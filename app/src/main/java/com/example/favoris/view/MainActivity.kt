@@ -5,16 +5,14 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.EditText
 import android.widget.Toast
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
-import androidx.lifecycle.Transformations
+import androidx.lifecycle.*
 import com.example.favoris.App
 import com.example.favoris.R
 import com.example.favoris.dao.IBookmarkDao
 import com.example.favoris.dao.IFolderDao
 import com.example.favoris.model.Bookmark
 import com.example.favoris.model.Folder
+import com.example.favoris.viewmodel.FavoriViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.Default
@@ -22,8 +20,13 @@ import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
+    companion object {
+        lateinit var liveDataOwner: LifecycleOwner
+    }
+
     private var folderNameLiveData = MutableLiveData<String>()
     lateinit var getFolderLiveData: LiveData<Folder>
+    private lateinit var viewModel: FavoriViewModel
 
 
     private lateinit var folderDAO: IFolderDao
@@ -32,6 +35,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        liveDataOwner = this
+        viewModel = ViewModelProviders.of(this).get(FavoriViewModel::class.java)
 
         getFolderLiveData = Transformations.switchMap(folderNameLiveData){ name ->
             folderDAO.getFolder(name)
@@ -45,7 +50,14 @@ class MainActivity : AppCompatActivity() {
         //CREATE FOLDER
         folderDAO = App.dataBase.folderDAO()
         createFolderButton.setOnClickListener {
-            saveFolder()
+            viewModel.saveFolder(createFolderEditText.textString()!!)
+            viewModel.getState().observe(this, Observer { state ->
+                if (state.success) {
+                    displayToast("Folder created successfully")
+                } else {
+                    displayToast(" WARNING!!! Folder wasn't created ")
+                }
+            })
             bookmarkFolderNameEditText.setText(createFolderEditText.textString())
 
         }
@@ -74,23 +86,23 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun saveFolder() {
-        CoroutineScope(Default).launch {
-            folderDAO.insertFolder(Folder(name = createFolderEditText.textString()!!))
-        }
-
+//        CoroutineScope(Default).launch {
+//            folderDAO.insertFolder(Folder(name = createFolderEditText.textString()!!))
+//        }
+        
 //        Executors.newSingleThreadExecutor().execute {//USED A DIFFERENT THREAD
 //            folderDAO.insertFolder(Folder(name = createFolderEditText.textString()!!))
 //        }
-        folderDAO.getFolder(createFolderEditText.text.toString()).observe(this, Observer { folder ->
-            Log.i("Main1","folders = $folder")
-
-            if (folder.name == createFolderEditText.textString()) {
-                displayToast("Folder created successfully")
-            } else {
-                displayToast(" WARNING!!! Folder wasn't created ")
-            }
-
-        })
+//        folderDAO.getFolder(createFolderEditText.text.toString()).observe(this, Observer { folder ->
+//            Log.i("Main1","folders = $folder")
+//
+//            if (folder.name == createFolderEditText.textString()) {
+//                displayToast("Folder created successfully")
+//            } else {
+//                displayToast(" WARNING!!! Folder wasn't created ")
+//            }
+//
+//        })
 
     }
 
