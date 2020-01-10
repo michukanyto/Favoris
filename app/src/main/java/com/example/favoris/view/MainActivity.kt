@@ -1,4 +1,4 @@
-package com.example.favoris
+package com.example.favoris.view
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -9,6 +9,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
+import com.example.favoris.App
+import com.example.favoris.R
 import com.example.favoris.dao.IBookmarkDao
 import com.example.favoris.dao.IFolderDao
 import com.example.favoris.model.Bookmark
@@ -17,9 +19,6 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.Default
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.util.concurrent.Executors
-import kotlin.random.Random
 
 class MainActivity : AppCompatActivity() {
 
