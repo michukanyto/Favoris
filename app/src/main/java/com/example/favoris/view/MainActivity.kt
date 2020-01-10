@@ -28,9 +28,10 @@ class MainActivity : AppCompatActivity() {
     lateinit var getFolderLiveData: LiveData<Folder>
     private lateinit var viewModel: FavoriViewModel
 
+//
+//    private lateinit var folderDAO: IFolderDao
+//    private lateinit var bookmarkDAO: IBookmarkDao
 
-    private lateinit var folderDAO: IFolderDao
-    private lateinit var bookmarkDAO: IBookmarkDao
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,16 +40,24 @@ class MainActivity : AppCompatActivity() {
         viewModel = ViewModelProviders.of(this).get(FavoriViewModel::class.java)
 
         getFolderLiveData = Transformations.switchMap(folderNameLiveData){ name ->
-            folderDAO.getFolder(name)
+//            folderDAO.getFolder(name)
+            viewModel.getFolder(name)
         }
 
         getFolderLiveData.observe(this, Observer { folder ->
-            createBookmark(folder!!.id,bookmarkFolderNameEditText.textString(),bookmarkUrlEditText.textString())
+//            createBookmark(folder!!.id,bookmarkFolderNameEditText.textString(),bookmarkUrlEditText.textString())
+            viewModel.createBookMark(folder!!.id,bookmarkFolderNameEditText.textString(),bookmarkUrlEditText.textString())
+            displayToast("Bookmark created successfully")
+            viewModel.getBookmarks().observe(this, Observer {bookmarks ->
+                bookmarksTextView.text = bookmarks.joinToString ("\n")
+
+            })
+
         })
 
 
         //CREATE FOLDER
-        folderDAO = App.dataBase.folderDAO()
+//        folderDAO = App.dataBase.folderDAO()
         createFolderButton.setOnClickListener {
             viewModel.saveFolder(createFolderEditText.textString()!!)
             viewModel.getState().observe(this, Observer { state ->
@@ -63,33 +72,33 @@ class MainActivity : AppCompatActivity() {
         }
 
         //CREATE BOOKMARK
-        bookmarkDAO = App.dataBase.bookmarkDAO()
+//        bookmarkDAO = App.dataBase.bookmarkDAO()
         createBookmarkButton.setOnClickListener {
             folderNameLiveData.value = bookmarkFolderNameEditText.textString()
         }
 
     }
 
-    private fun createBookmark(id: Long, name: String, url: String) {
-//        Executors.newSingleThreadExecutor().execute {//USED A DIFFERENT THREAD
+//    private fun createBookmark(id: Long, name: String, url: String) {
+////        Executors.newSingleThreadExecutor().execute {//USED A DIFFERENT THREAD
+////            bookmarkDAO.insertBookmark(Bookmark(0,id!!,name!!,url!!))
+////        }
+//        CoroutineScope(Default).launch {
 //            bookmarkDAO.insertBookmark(Bookmark(0,id!!,name!!,url!!))
 //        }
-        CoroutineScope(Default).launch {
-            bookmarkDAO.insertBookmark(Bookmark(0,id!!,name!!,url!!))
-        }
-
-        bookmarkDAO.getAllBookmarks().observe(this, Observer { bookmarks ->
-            bookmarksTextView.text = bookmarks.joinToString ("\n")
-        })
-
-        displayToast("Bookmark created successfully")
-    }
+//
+//        bookmarkDAO.getAllBookmarks().observe(this, Observer { bookmarks ->
+//            bookmarksTextView.text = bookmarks.joinToString ("\n")
+//        })
+//
+//        displayToast("Bookmark created successfully")
+//    }
 
     fun saveFolder() {
 //        CoroutineScope(Default).launch {
 //            folderDAO.insertFolder(Folder(name = createFolderEditText.textString()!!))
 //        }
-        
+
 //        Executors.newSingleThreadExecutor().execute {//USED A DIFFERENT THREAD
 //            folderDAO.insertFolder(Folder(name = createFolderEditText.textString()!!))
 //        }

@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import com.example.favoris.App
 import com.example.favoris.dao.IBookmarkDao
 import com.example.favoris.dao.IFolderDao
+import com.example.favoris.model.Bookmark
 import com.example.favoris.model.Folder
 import com.example.favoris.view.MainActivity
 import kotlinx.coroutines.CoroutineScope
@@ -18,11 +19,10 @@ class ViewModelState(val success:Boolean = false)
 
 class FavoriViewModel : ViewModel() {
 
-    private lateinit var folderDAO: IFolderDao
-    private lateinit var bookmarkDAO: IBookmarkDao
+    private val folderDAO: IFolderDao = App.dataBase.folderDAO()
+    private val bookmarkDAO: IBookmarkDao = App.dataBase.bookmarkDAO()
 
     fun saveFolder(folderName: String) {
-        folderDAO = App.dataBase.folderDAO()
         CoroutineScope(Default).launch {
             folderDAO.insertFolder(Folder(name = folderName))
         }
@@ -39,6 +39,20 @@ class FavoriViewModel : ViewModel() {
     private val success = MutableLiveData<ViewModelState>()
 
     fun getState(): LiveData<ViewModelState> = success
+
+    fun createBookMark(folderId: Long,bmName: String,bmUrl: String) {
+        CoroutineScope(Default).launch {
+            bookmarkDAO.insertBookmark(Bookmark(0,folderId,bmName,bmUrl))
+        }
+    }
+
+    fun getFolder(name: String) : LiveData<Folder> {
+        return folderDAO.getFolder(name)
+    }
+
+    fun getBookmarks() : LiveData<List<Bookmark>> {
+        return bookmarkDAO.getAllBookmarks()
+    }
 
 
 }
