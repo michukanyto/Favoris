@@ -60,8 +60,10 @@ class MainActivity : AppCompatActivity() {
 //        folderDAO = App.dataBase.folderDAO()
         createFolderButton.setOnClickListener {
             viewModel.saveFolder(createFolderEditText.textString()!!)
-            viewModel.getState().observe(this, Observer { state ->
-                if (state.success) {
+//            /////////première solution
+//            viewModel.getState().observe(this, Observer { state ->
+            viewModel.getState2().observe(this, Observer {
+                if (it) {
                     displayToast("Folder created successfully")
                 } else {
                     displayToast(" WARNING!!! Folder wasn't created ")
