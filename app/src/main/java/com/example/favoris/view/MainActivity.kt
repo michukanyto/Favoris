@@ -28,10 +28,6 @@ class MainActivity : AppCompatActivity() {
     lateinit var getFolderLiveData: LiveData<Folder>
     private lateinit var viewModel: FavoriViewModel
 
-//
-//    private lateinit var folderDAO: IFolderDao
-//    private lateinit var bookmarkDAO: IBookmarkDao
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,11 +53,11 @@ class MainActivity : AppCompatActivity() {
 
 
         //CREATE FOLDER
-//        folderDAO = App.dataBase.folderDAO()
         createFolderButton.setOnClickListener {
             viewModel.saveFolder(createFolderEditText.textString()!!)
 //            /////////première solution
 //            viewModel.getState().observe(this, Observer { state ->
+            /////////sln with transformation
             viewModel.getState2().observe(this, Observer {
                 if (it) {
                     displayToast("Folder created successfully")
@@ -74,46 +70,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         //CREATE BOOKMARK
-//        bookmarkDAO = App.dataBase.bookmarkDAO()
         createBookmarkButton.setOnClickListener {
             folderNameLiveData.value = bookmarkFolderNameEditText.textString()
         }
-
-    }
-
-//    private fun createBookmark(id: Long, name: String, url: String) {
-////        Executors.newSingleThreadExecutor().execute {//USED A DIFFERENT THREAD
-////            bookmarkDAO.insertBookmark(Bookmark(0,id!!,name!!,url!!))
-////        }
-//        CoroutineScope(Default).launch {
-//            bookmarkDAO.insertBookmark(Bookmark(0,id!!,name!!,url!!))
-//        }
-//
-//        bookmarkDAO.getAllBookmarks().observe(this, Observer { bookmarks ->
-//            bookmarksTextView.text = bookmarks.joinToString ("\n")
-//        })
-//
-//        displayToast("Bookmark created successfully")
-//    }
-
-    fun saveFolder() {
-//        CoroutineScope(Default).launch {
-//            folderDAO.insertFolder(Folder(name = createFolderEditText.textString()!!))
-//        }
-
-//        Executors.newSingleThreadExecutor().execute {//USED A DIFFERENT THREAD
-//            folderDAO.insertFolder(Folder(name = createFolderEditText.textString()!!))
-//        }
-//        folderDAO.getFolder(createFolderEditText.text.toString()).observe(this, Observer { folder ->
-//            Log.i("Main1","folders = $folder")
-//
-//            if (folder.name == createFolderEditText.textString()) {
-//                displayToast("Folder created successfully")
-//            } else {
-//                displayToast(" WARNING!!! Folder wasn't created ")
-//            }
-//
-//        })
 
     }
 

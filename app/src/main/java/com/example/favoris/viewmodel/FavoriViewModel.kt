@@ -20,7 +20,7 @@ class FavoriViewModel : ViewModel() {
 
     private val folderDAO: IFolderDao = App.dataBase.folderDAO()
     private val bookmarkDAO: IBookmarkDao = App.dataBase.bookmarkDAO()
-    /////////sln
+    /////////sln with transformation
     private lateinit var folderLiveData: LiveData<Boolean>
     /////////sln 2
 //    private val lifecycleOwner: LifecycleOwner? = context as? LyfecycleOwner
@@ -30,9 +30,10 @@ class FavoriViewModel : ViewModel() {
             folderDAO.insertFolder(Folder(name = folderName))
         }
 
-/////////sln
+/////////sln with transformation
         folderLiveData = Transformations.map(folderDAO.getFolder(folderName)){
-            folderwasCreated(folderName, it)
+//            folderwasCreated(folderName, it)
+            folderName == it.name
         }
 
         //première solution
@@ -45,7 +46,8 @@ class FavoriViewModel : ViewModel() {
 //        })
     }
 
-    private val success = MutableLiveData<ViewModelState>()
+    //première solution
+//    private val success = MutableLiveData<ViewModelState>()
 
     //première solution
 //    fun getState(): LiveData<ViewModelState> = success
@@ -65,19 +67,6 @@ class FavoriViewModel : ViewModel() {
     fun getBookmarks() : LiveData<List<Bookmark>> {
 
         return bookmarkDAO.getAllBookmarks()
-    }
-
-    /////////sln
-    fun folderwasCreated(folderName:String, folder: Folder) : Boolean {
-
-        if (folderName == folder.name) {
-            success.value = ViewModelState(true)
-            return true
-
-        } else {
-            success.value = ViewModelState(false)
-            return false
-        }
     }
 
 
