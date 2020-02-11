@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        liveDataOwner = this
+//        liveDataOwner = this
         viewModel = ViewModelProviders.of(this).get(FavoriViewModel::class.java)
 
         getFolderLiveData = Transformations.switchMap(folderNameLiveData){ name ->
