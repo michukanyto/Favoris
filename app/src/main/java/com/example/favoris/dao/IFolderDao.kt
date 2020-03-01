@@ -18,4 +18,5 @@ interface IFolderDao {
 
     @Query("SELECT * FROM folders WHERE name = :folderName")
     fun getFolder(folderName: String): LiveData<Folder>
+
 }
