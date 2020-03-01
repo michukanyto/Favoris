@@ -15,6 +15,7 @@ class MainActivity : AppCompatActivity() {
     private var folderNameLiveData = MutableLiveData<String>()
     lateinit var getFolderLiveData: LiveData<Folder>
     private lateinit var viewModel: FavoriViewModel
+    lateinit var folder: Folder
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,6 +24,7 @@ class MainActivity : AppCompatActivity() {
 //        liveDataOwner = this
         viewModel = ViewModelProviders.of(this).get(FavoriViewModel::class.java)
 
+        //switchMap return a LiveData map return a value
         getFolderLiveData = Transformations.switchMap(folderNameLiveData){ name ->
             viewModel.getFolder(name)
         }
@@ -42,11 +44,7 @@ class MainActivity : AppCompatActivity() {
             viewModel.saveFolder(createFolderEditText.textString())
 
             viewModel.getState().observe(this, Observer {
-                if (it) {
-                    displayToast("Folder created successfully")
-                } else {
-                    displayToast(" WARNING!!! Folder wasn't created ")
-                }
+                if (it) displayToast("Folder created successfully") else displayToast(" WARNING!!! Folder wasn't created ")
             })
             bookmarkFolderNameEditText.setText(createFolderEditText.textString())
         }

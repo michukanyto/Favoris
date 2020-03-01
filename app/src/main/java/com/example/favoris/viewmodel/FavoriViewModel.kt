@@ -24,6 +24,7 @@ class FavoriViewModel : ViewModel() {
             folderDAO.insertFolder(Folder(name = folderName))
         }
 
+        //switchMap return a LiveData map return a value
         folderLiveData = Transformations.map(folderDAO.getFolder(folderName)){
             folderName == it.name
         }
